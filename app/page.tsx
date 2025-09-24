@@ -11,7 +11,11 @@ async function getResumeInfo() {
   return res.json();
 }
 
-export default function Home() {
+export default async function Home() {
+
+  // getResumeInfo 함수를 호출하여 데이터를 기다림
+  const data = await getResumeInfo();
+
   return (
     <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
       <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
