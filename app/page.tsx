@@ -2,7 +2,7 @@ import Image from "next/image";
 
 // 서버 컴포넌트에서 직접 API 호출
 async function getResumeInfo() {
-  const res = await fetch('https://raw.githubusercontent.com/j2hxxx/first-deploy/refs/heads/0.3/general_info/service/resume_general_info_service.json');
+  const res = await fetch('https://raw.githubusercontent.com/j2hxxx/first-deploy/refs/heads/0.3/resume/service/resume_general_info_service.json');
   // API 응답이 성공적인지 확인
   if (!res.ok) {
     // 응답이 실패하면 오류를 던져 Next.js가 오류 페이지를 보여주도록 함
