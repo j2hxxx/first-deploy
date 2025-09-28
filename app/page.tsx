@@ -1,118 +1,170 @@
 import Image from "next/image";
 
-// 서버 컴포넌트에서 직접 API 호출
+
 async function getResumeInfo() {
-  const res = await fetch('https://raw.githubusercontent.com/j2hxxx/first-deploy/refs/heads/0.3/resume/service/resume_general_info_service.json');
-  // API 응답이 성공적인지 확인
-  if (!res.ok) {
-    // 응답이 실패하면 오류를 던져 Next.js가 오류 페이지를 보여주도록 함
-    throw new Error('Failed to fetch data');
-  }
+  const res = await fetch(
+    "https://raw.githubusercontent.com/j2hxxx/first-deploy/refs/heads/0.3/resume/service/resume_general_info_service.json",
+    { cache: "no-store" }
+  );
+  if (!res.ok) throw new Error("Failed to fetch data");
   return res.json();
 }
 
-export default async function Home() {
+const palette = {
+  cream: "#F6E7D8",
+  peach: "#F2D1B3",
+  sand: "#E7C9A9",
+  honey: "#E7A74E",
+  brown: "#9B7056",
+};
 
-  // getResumeInfo 함수를 호출하여 데이터를 기다림
+export default async function Home() {
   const data = await getResumeInfo();
+  const githubUrl = `https://github.com/${data.git_name ?? ""}`;
 
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/hamster.png"
-          alt="Hamster"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            j2hxxx{" "} {data.name}
-            {/* <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code> */}
-            {/* . */}
-          </li>
-          <li className="tracking-[-.01em]">
-            25 years old / Seoul
-          </li>
-        </ol>
-
-        {/* <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+    <div className="min-h-screen w-full bg-white dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 selection:bg-amber-200/70 selection:text-neutral-900">
+      {/* Header */}
+      <header className="mx-auto max-w-3xl px-6 pt-12">
+        <div className="flex flex-col sm:flex-row items-center gap-6">
+          <div className="relative">
+            <div
+              className="absolute -inset-3 rounded-2xl blur"
+              style={{ background: `linear-gradient(135deg, ${palette.peach}, ${palette.honey})`, opacity: 0.6 }}
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            <img
+              className="relative rounded-2xl ring-1 ring-black/5 dark:ring-white/10 shadow-lg"
+              src="/hamster.png"
+              alt="Hamster"
+              width={160}
+              height={160}
+              loading="eager"
+            />
+          </div>
+
+          <div className="flex-1">
+            <h1 className="text-3xl font-extrabold tracking-tight">
+              하지현
+            </h1>
+            <p className="mt-2 text-base/7 text-neutral-600 dark:text-neutral-300">
+              25 years old <span className="mx-2">/</span> {data.live}
+            </p>
+
+            {/* Links */}
+            <div className="mt-4 flex flex-wrap items-center gap-3">
+              <a
+                href={githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium ring-1 ring-neutral-200 dark:ring-neutral-800 hover:ring-neutral-400 dark:hover:ring-neutral-600 transition"
+                style={{ backgroundColor: palette.cream }}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                  <path d="M12 .5a12 12 0 0 0-3.79 23.4c.6.1.82-.26.82-.58v-2.02c-3.34.73-4.04-1.61-4.04-1.61-.55-1.4-1.35-1.78-1.35-1.78-1.1-.76.08-.74.08-.74 1.22.09 1.86 1.25 1.86 1.25 1.08 1.85 2.83 1.32 3.52 1.01.11-.8.42-1.32.77-1.63-2.66-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.17 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.66 1.65.24 2.87.12 3.17.77.84 1.23 1.91 1.23 3.22 0 4.61-2.82 5.62-5.5 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.69.83.57A12 12 0 0 0 12 .5z"/>
+                </svg>
+                <span className="underline-offset-4 hover:underline">{data.git_name}</span>
+              </a>
+
+              {data.email && (
+                <a
+                  href={`mailto:${data.email}`}
+                  className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium ring-1 ring-neutral-200 dark:ring-neutral-800 hover:ring-neutral-400 dark:hover:ring-neutral-600 transition"
+                  style={{ backgroundColor: palette.peach }}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                    <path d="M12 13 2 6.76V18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6.76L12 13z"/><path d="M22 6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2l10 6L22 6z"/>
+                  </svg>
+                  <span>{data.email}</span>
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Content */}
+      <main className="mx-auto max-w-3xl px-6 pb-24 pt-10">
+        {/* Timeline */}
+        <section className="mt-2">
+          <h2 className="sr-only">Timeline</h2>
+
+          {/* vertical guide line */}
+          <div className="relative">
+            <div className="absolute left-[7px] top-0 bottom-0 w-px bg-neutral-200 dark:bg-neutral-800" />
+
+            <ul className="space-y-4 text-sm sm:text-base text-neutral-700 dark:text-neutral-300">
+              <li className="relative ps-6">
+                <span
+                  className="absolute left-0 top-1.5 h-3 w-3 rounded-full ring-2 ring-white dark:ring-neutral-900"
+                  style={{ backgroundColor: palette.honey }}
+                  aria-hidden
+                />
+                <span className="font-semibold">2021.03</span>&nbsp; 대학 입학
+              </li>
+
+              <li className="relative ps-6">
+                <span
+                  className="absolute left-0 top-1.5 h-3 w-3 rounded-full ring-2 ring-white dark:ring-neutral-900"
+                  style={{ backgroundColor: palette.brown }}
+                  aria-hidden
+                />
+                <span className="font-semibold">2023.11~2025.04</span>&nbsp; 학부연구생
+              </li>
+
+              <li className="relative ps-6">
+                <span
+                  className="absolute left-0 top-1.5 h-3 w-3 rounded-full ring-2 ring-white dark:ring-neutral-900"
+                  style={{ backgroundColor: palette.honey }}
+                  aria-hidden
+                />
+                <span className="font-semibold">2025.08</span>&nbsp; 대학 졸업
+              </li>
+            </ul>
+          </div>
+        </section>
+
+
+        {/* Cards */}
+        <section className="mt-10 grid gap-6 sm:grid-cols-2">
+          {/* Hobby card */}
+          <div
+            className="rounded-2xl p-5 ring-1 ring-black/5 dark:ring-white/10 shadow-sm"
+            style={{ backgroundColor: palette.cream }}
           >
-            Read our docs
-          </a>
-        </div> */}
+            <h2 className="text-lg font-bold tracking-tight">취미</h2>
+            <p className="mt-1 text-xs text-neutral-600 dark:text-neutral-300"></p>
+            <ul className="mt-3 space-y-2 text-sm">
+              <li className="flex items-start gap-2">
+                <span className="mt-1 h-2 w-2 rounded-full" style={{ backgroundColor: palette.honey }} />
+                <span>야구관람</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="mt-1 h-2 w-2 rounded-full" style={{ backgroundColor: palette.brown }} />
+                <span>쿠키만들기</span>
+              </li>
+            </ul>
+          </div>
+
+          {/* Goal card */}
+          <div
+            className="rounded-2xl p-5 ring-1 ring-black/5 dark:ring-white/10 shadow-sm"
+            style={{ backgroundColor: palette.sand }}
+          >
+            <h2 className="text-lg font-bold tracking-tight">목표</h2>
+            <p className="mt-1 text-xs text-neutral-600 dark:text-neutral-300"></p>
+            <ul className="mt-3 space-y-2 text-sm">
+              <li className="flex items-start gap-2">
+                <span className="mt-1 h-2 w-2 rounded-full" style={{ backgroundColor: palette.honey }} />
+                <span>열심히 잘 하자</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="mt-1 h-2 w-2 rounded-full" style={{ backgroundColor: palette.honey }} />
+                <span>항상 정확하고 확실하게</span>
+              </li>
+            </ul>
+          </div>
+        </section>
       </main>
-      {/* <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer> */}
     </div>
   );
 }
